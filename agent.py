@@ -12,10 +12,8 @@ if "GOOGLE_API_KEY" not in os.environ:
 def create_agent(filename: str):
     """
     Create an agent that can access and use a large language model (LLM).
-
     Args:
         filename: The path to the CSV file that contains the data.
-
     Returns:
         An agent that can access and use the LLM.
     """
