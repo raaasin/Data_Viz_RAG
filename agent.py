@@ -7,8 +7,6 @@ import warnings
 warnings.filterwarnings("ignore")
 if "GOOGLE_API_KEY" not in os.environ:
     os.environ["GOOGLE_API_KEY"] = "AIzaSyBngXwICYwR-vYEul1s0_XZFicHEt9paMs"
-
-
 def create_agent(filename: str):
     """
     Create an agent that can access and use a large language model (LLM).
@@ -23,8 +21,6 @@ def create_agent(filename: str):
     df = pd.read_csv(filename)
     # Create a Pandas DataFrame agent.
     return create_pandas_dataframe_agent(llm, df, verbose=False)
-
-
 def query_agent(agent, query):
     """
     Query an agent and return the response as a string.
