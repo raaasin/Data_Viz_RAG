@@ -17,9 +17,9 @@ def create_agent(filename: str):
     """
     # Create an Gemini object.
     llm = ChatGoogleGenerativeAI(model="gemini-pro",temperature=0)
-    # Read the CSV file into a Pandas DataFrame.
+
     df = pd.read_csv(filename)
-    # Create a Pandas DataFrame agent.
+
     return create_pandas_dataframe_agent(llm, df, verbose=False)
 def query_agent(agent, query):
     """
