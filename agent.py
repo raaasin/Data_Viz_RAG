@@ -8,8 +8,7 @@ warnings.filterwarnings("ignore")
 if "GOOGLE_API_KEY" not in os.environ:
     os.environ["GOOGLE_API_KEY"] = "AIzaSyBngXwICYwR-vYEul1s0_XZFicHEt9paMs"
 def create_agent(filename: str):
-    """
-    Create an agent that can access and use a large language model (LLM).
+    """Create an agent that can access and use a large language model (LLM).
     Args:
         filename: The path to the CSV file that contains the data.
     Returns:
