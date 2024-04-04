@@ -1,42 +1,43 @@
-from langchain_experimental.agents import create_pandas_dataframe_agent
-import pandas as pd
+from langchain_community.document_loaders import CSVLoader
+from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+from langchain_community.vectorstores import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_experimental.agents.agent_toolkits import create_csv_agent
-import os 
-import warnings
-from langchain.agents.agent_types import AgentType
-warnings.filterwarnings("ignore")
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnableLambda, RunnablePassthrough
+import os
+
 if "GOOGLE_API_KEY" not in os.environ:
     os.environ["GOOGLE_API_KEY"] = "AIzaSyBngXwICYwR-vYEul1s0_XZFicHEt9paMs"
-def create_agent(filename: str):
-    """Create an agent that can access and use a large language model (LLM).
-    Args:
-        filename: The path to the CSV file that contains the data.
-    Returns:
-        An agent that can access and use the LLM.
-    """
-    # Create an Gemini object.
-    llm = ChatGoogleGenerativeAI(model="gemini-pro",temperature=0.2)
 
-    df = pd.read_csv(filename)
+embedding_function = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-    return create_pandas_dataframe_agent(llm, df, verbose=True,
-    agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,)
-def query_agent(agent, query):
-    """
-    Query an agent and return the response as a string.
+loader = CSVLoader("banklist.csv", encoding="windows-1252")
+documents = loader.load()
 
-    Args:
-        agent: The agent to query.
-        query: The query to ask the agent.
+db = Chroma.from_documents(documents, embedding_function)
+retriever = db.as_retriever()
 
-    Returns:
-        The response from the agent as a string.
-    """
+template = """Answer the question based only on the following context:
+{context}
 
-    prompt = (
-        """
+Question: {question}
+"""
+prompt = ChatPromptTemplate.from_template(template)
+
+model = ChatGoogleGenerativeAI(model="gemini-pro",temperature=1)
+
+chain = (
+    {"context": retriever, "question": RunnablePassthrough()}
+    | prompt
+    | model
+    | StrOutputParser()
+)
+
+print(chain.invoke("""
         For the following query, if it requires drawing a table, reply as follows:
+                  The Data column can only have numerical value
         {"table": {"columns": ["column1", "column2", ...], "data": [[value1, value2, ...], [value1, value2, ...], ...], "facts": ["Based on the data you provided, write an interesting insight or fact here"]}} 
 
         If the query requires creating a bar chart, reply as follows:
@@ -73,13 +74,4 @@ def query_agent(agent, query):
         Below is the query.
         Query: 
         """
-        + query
-    )
-
-
-    # Run the prompt through the agent.
-    response = agent.run(prompt)
-
-    # Convert the response to a string.
-    print(response.__str__() + "\n")
-    return response.__str__()
+        + "make some sort of bar chart from bank data"))
