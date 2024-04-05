@@ -15,6 +15,7 @@ def create_agent(filename: str):
     Returns:
         An agent that can access and use the LLM.
     """
+    
     # Create an Gemini object.
     llm = ChatGoogleGenerativeAI(model="gemini-pro",temperature=0.2)
 
