@@ -7,7 +7,6 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 import os
-
 if "GOOGLE_API_KEY" not in os.environ:
     os.environ["GOOGLE_API_KEY"] = "AIzaSyBngXwICYwR-vYEul1s0_XZFicHEt9paMs"
 
