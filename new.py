@@ -36,4 +36,3 @@ chain = (
 
 print(chain.invoke("What bank failed in North Carolina?"))
 
-"""The bank that failed in North Carolina is Blue Ridge Savings Bank, Inc."""
