@@ -1,18 +1,17 @@
-from faster_whisper import WhisperModel
+import assemblyai as aai
 
-model_size = "large-v3"
+aai.settings.api_key = "4822f34dd0bb40e9a1be096507478a73"
 
-# Run on GPU with FP16
-model = WhisperModel(model_size, device="cuda", compute_type="float16")
+# URL of the file to transcribe
+FILE_URL = "https://github.com/AssemblyAI-Examples/audio-examples/raw/main/20230607_me_canadian_wildfires.mp3"
 
-# or run on GPU with INT8
-# model = WhisperModel(model_size, device="cuda", compute_type="int8_float16")
-# or run on CPU with INT8
-# model = WhisperModel(model_size, device="cpu", compute_type="int8")
+# You can also transcribe a local file by passing in a file path
+# FILE_URL = './path/to/file.mp3'
 
-segments, info = model.transcribe("audio.mp3", beam_size=5)
+transcriber = aai.Transcriber()
+transcript = transcriber.transcribe(FILE_URL)
 
-print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
-
-for segment in segments:
-    print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
+if transcript.status == aai.TranscriptStatus.error:
+    print(transcript.error)
+else:
+    print(transcript.text)
