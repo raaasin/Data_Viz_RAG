@@ -85,7 +85,6 @@ data = st.file_uploader("Upload a CSV")
 
 query = st.text_area("Insert your query")
 
-record_button = st.button("Record Audio", type="primary")
 
 if st.button("Submit Query", type="primary"):
     agent = create_agent(data)
@@ -93,12 +92,3 @@ if st.button("Submit Query", type="primary"):
     decoded_response = decode_response(response)
     write_response(decoded_response)
 
-if record_button:
-  is_recording = not is_recording  # Toggle recording state on button click
-  if not is_recording:
-    recording = sd.get_stopped_data()  # Access recorded data after stopping
-    # Save recording as mp3 file (if any data captured)
-    if recording is not None:
-      filename = "recording.mp3"
-      write(filename, fs, recording)
-      st.success(f"Audio recording saved as {filename}")
