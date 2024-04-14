@@ -10,7 +10,6 @@ warnings.filterwarnings("ignore")
 from secret import apikey
 if "GOOGLE_API_KEY" not in os.environ:
     os.environ["GOOGLE_API_KEY"] = apikey
-
 def create_agent(filename: str):
     llm = ChatGoogleGenerativeAI(model="gemini-pro",temperature=0.2)
 
