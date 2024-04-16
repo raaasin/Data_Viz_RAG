@@ -15,7 +15,6 @@ def create_agent(filename: str):
     df = pd.read_csv(filename)
     return create_pandas_dataframe_agent(llm, df, verbose=True,
     agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION)
-
 def query_agent(agent, query):
     prompt = (promp+ query)
     response = agent.run(prompt)
